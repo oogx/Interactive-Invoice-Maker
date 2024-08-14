@@ -1,209 +1,208 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>Interactive Invoice Maker</title>
-    <link rel="icon" href = "https://placehold.co/300x300"/>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="invoice-box">
-        <table cellpadding="0" cellspacing="0">
+   <head>
+      <meta charset="utf-8" />
+      <title>Interactive Invoice Maker</title>
+      <link rel="icon" href = "https://placehold.co/300x300"/>
+      <link rel="stylesheet" href="style.css">
+   </head>
+   <body>
+      <div class="invoice-box">
+         <table cellpadding="0" cellspacing="0">
             <tr class="top">
-                <td colspan="2">
-                    <table>
-                        <tr>
-                            <td class="title">
-                                <img src="https://placehold.co/300x200" style="width: 100%; max-width: 300px">
-                            </td>
-                            <td>
-                                <div class="editable">Receipt: #001</div>
-                                <div class="editable">Purchased: 6 May, 2024</div>
-                                <div class="editable" id = "printed-on">Printed On: </div>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
+               <td colspan="2">
+                  <table>
+                     <tr>
+                        <td class="title">
+                           <img src="https://placehold.co/300x200" style="width: 100%; max-width: 300px">
+                        </td>
+                        <td>
+                           <div class="editable">Receipt: #001</div>
+                           <div class="editable">Purchased: 6 May, 2024</div>
+                           <div class="editable" id = "printed-on">Printed On: </div>
+                        </td>
+                     </tr>
+                  </table>
+               </td>
             </tr>
             <tr class="information">
-                <td colspan="2">
-                    <table>
-                        <tr>
-                            <td>
-                                <div class="editable">First Line</div>
-                                <div class="editable">Second Line</div>
-                                <div class="editable">Location, Postcode</div>
-                            </td>
-                            <td>
-                                <div class="editable">Client Name</div>
-                                <div class="editable">Client Email</div>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
+               <td colspan="2">
+                  <table>
+                     <tr>
+                        <td>
+                           <div class="editable">First Line</div>
+                           <div class="editable">Second Line</div>
+                           <div class="editable">Location, Postcode</div>
+                        </td>
+                        <td>
+                           <div class="editable">Client Name</div>
+                           <div class="editable">Client Email</div>
+                        </td>
+                     </tr>
+                  </table>
+               </td>
             </tr>
             <tr class="heading">
-                <td>Payment Method</td>
-                <td># ID</td>
+               <td>Payment Method</td>
+               <td># ID</td>
             </tr>
             <tr class="details">
-                <td class="editable">Paypal</td>
-                <td class="editable">Purchase Id</td>
+               <td class="editable">Paypal</td>
+               <td class="editable">Purchase Id</td>
             </tr>
             <tr class="heading">
-                <td id = "item-heading">Item</td>
-                <td>Price</td>
+               <td id = "item-heading">Item</td>
+               <td>Price</td>
             </tr>
             <tbody id="product-list">
             </tbody>
             <tr class="total">
-                <td></td>
-                <td id="totalcost">Total:</td>
+               <td></td>
+               <td id="totalcost">Total:</td>
             </tr>
-        </table>
-    </div>
-    <button class="add-product-button" onclick="addProduct()">Add Product</button>
-    <button class="copy-button" onclick="copyCode()">Copy All Code</button>
-
-    <script>
-        function updateTotal() {
-            const prices = document.querySelectorAll('.price');
-            let total = 0;
-            prices.forEach(priceElement => {
-                const price = parseFloat(priceElement.textContent.replace('£', ''));
-                total += price;
-            });
-            const totalCostElement = document.getElementById('totalcost');
-            totalCostElement.textContent = `Total: £${total.toFixed(2)}`;
-        }
-
-        function makeEditable(element) {
-            element.addEventListener('click', () => {
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.value = element.textContent.trim();
-                element.textContent = '';
-                element.appendChild(input);
-                input.focus();
-
-                input.addEventListener('blur', () => {
-                    element.textContent = input.value;
-                    if (element.classList.contains('price')) {
-                        updateTotal();
-                    }
-                });
-
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        input.blur();
-                    }
-                });
-            });
-        }
-
-        function addProduct() {
-            const productList = document.getElementById('product-list');
-            const newRow = document.createElement('tr');
-            newRow.classList.add('item');
-            newRow.innerHTML = `
-                <td>
-                    <div class="editable">Product Name</div>
-                    <div class="item-details editable">Colour: Testing</div>
-                    <button class="add-item-detail-button" onclick="addItemDetail(this)">Add Item Detail</button>
-					<button class="add-item-detail-button" onclick="deleteProduct(this)">Delete Product</button>
-                </td>
-                <td class="price editable">£0.00</td>
-            `;
-            productList.appendChild(newRow);
-
-            newRow.querySelectorAll('.editable').forEach(element => {
-                makeEditable(element);
-            });
-
-			updateItemHeading();
-            updateLastClass();
-            updateTotal();
-        }
-
-        function addItemDetail(button) {
-            const detailDiv = document.createElement('div');
-            detailDiv.classList.add('item-details', 'editable');
-            detailDiv.textContent = 'New Detail';
-            button.parentElement.insertBefore(detailDiv, button);
-
-            makeEditable(detailDiv);
-        }
-
-        function updateLastClass() {
-            const items = document.querySelectorAll('.item');
-            items.forEach(item => {
-                item.classList.remove('last');
-            });
-            if (items.length > 0) {
-                items[items.length - 1].classList.add('last');
-            }
-        }
-
-		function deleteProduct(button) {
-            const productRow = button.closest('.item');
-            if (productRow) {
-                productRow.remove();
-				updateItemHeading();
-                updateLastClass();
-                updateTotal();
-            }
-        }
-        document.querySelectorAll('.editable').forEach(element => {
-            makeEditable(element);
-        });
-
-		function updateItemHeading() {
-            const itemCount = document.querySelectorAll('.item').length;
-            const itemHeading = document.getElementById('item-heading');
-            if (itemCount > 1) {
-                itemHeading.textContent = "Item's";
-            } else {
-                itemHeading.textContent = 'Item';
-            }
-        }
-
-        function copyCode() {
-            const scripts = document.querySelectorAll('script');
-            scripts.forEach(script => script.remove());
-
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(button => button.remove());
-
-            const htmlContent = document.documentElement.outerHTML;
-
-            scripts.forEach(script => document.head.appendChild(script.cloneNode(true)));
-
-            const addProductButton = document.createElement('button');
-            addProductButton.className = 'add-product-button';
-            addProductButton.textContent = 'Add Product';
-            addProductButton.setAttribute('onclick', 'addProduct()');
-            document.body.appendChild(addProductButton);
-
-            const copyButton = document.createElement('button');
-            copyButton.className = 'copy-button';
-            copyButton.textContent = 'Copy All Code';
-            copyButton.setAttribute('onclick', 'copyCode()');
-            document.body.appendChild(copyButton);
-
-            navigator.clipboard.writeText(htmlContent).then(() => {
-                alert('Code copied to clipboard!');
-            }).catch(err => {
-                alert('Failed to copy code: ' + err);
-            });
-        }
-		const printedOnElement = document.getElementById('printed-on');
-        const currentDate = new Date();
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        printedOnElement.textContent += ` ${currentDate.toLocaleDateString('en-GB', options)}`;
-
-		updateItemHeading();
-		updateLastClass();
-        updateTotal();
-    </script>
-</body>
+         </table>
+      </div>
+      <button class="add-product-button" onclick="addProduct()">Add Product</button>
+      <button class="copy-button" onclick="copyCode()">Copy All Code</button>
+      <script>
+         function updateTotal() {
+             const prices = document.querySelectorAll('.price');
+             let total = 0;
+             prices.forEach(priceElement => {
+                 const price = parseFloat(priceElement.textContent.replace('£', ''));
+                 total += price;
+             });
+             const totalCostElement = document.getElementById('totalcost');
+             totalCostElement.textContent = `Total: £${total.toFixed(2)}`;
+         }
+         
+         function makeEditable(element) {
+             element.addEventListener('click', () => {
+                 const input = document.createElement('input');
+                 input.type = 'text';
+                 input.value = element.textContent.trim();
+                 element.textContent = '';
+                 element.appendChild(input);
+                 input.focus();
+         
+                 input.addEventListener('blur', () => {
+                     element.textContent = input.value;
+                     if (element.classList.contains('price')) {
+                         updateTotal();
+                     }
+                 });
+         
+                 input.addEventListener('keypress', (e) => {
+                     if (e.key === 'Enter') {
+                         input.blur();
+                     }
+                 });
+             });
+         }
+         
+         function addProduct() {
+             const productList = document.getElementById('product-list');
+             const newRow = document.createElement('tr');
+             newRow.classList.add('item');
+             newRow.innerHTML = `
+                 <td>
+                     <div class="editable">Product Name</div>
+                     <div class="item-details editable">Colour: Testing</div>
+                     <button class="add-item-detail-button" onclick="addItemDetail(this)">Add Item Detail</button>
+         <button class="add-item-detail-button" onclick="deleteProduct(this)">Delete Product</button>
+                 </td>
+                 <td class="price editable">£0.00</td>
+             `;
+             productList.appendChild(newRow);
+         
+             newRow.querySelectorAll('.editable').forEach(element => {
+                 makeEditable(element);
+             });
+         
+         updateItemHeading();
+             updateLastClass();
+             updateTotal();
+         }
+         
+         function addItemDetail(button) {
+             const detailDiv = document.createElement('div');
+             detailDiv.classList.add('item-details', 'editable');
+             detailDiv.textContent = 'New Detail';
+             button.parentElement.insertBefore(detailDiv, button);
+         
+             makeEditable(detailDiv);
+         }
+         
+         function updateLastClass() {
+             const items = document.querySelectorAll('.item');
+             items.forEach(item => {
+                 item.classList.remove('last');
+             });
+             if (items.length > 0) {
+                 items[items.length - 1].classList.add('last');
+             }
+         }
+         
+         function deleteProduct(button) {
+             const productRow = button.closest('.item');
+             if (productRow) {
+                 productRow.remove();
+         updateItemHeading();
+                 updateLastClass();
+                 updateTotal();
+             }
+         }
+         document.querySelectorAll('.editable').forEach(element => {
+             makeEditable(element);
+         });
+         
+         function updateItemHeading() {
+             const itemCount = document.querySelectorAll('.item').length;
+             const itemHeading = document.getElementById('item-heading');
+             if (itemCount > 1) {
+                 itemHeading.textContent = "Item's";
+             } else {
+                 itemHeading.textContent = 'Item';
+             }
+         }
+         
+         function copyCode() {
+             const scripts = document.querySelectorAll('script');
+             scripts.forEach(script => script.remove());
+         
+             const buttons = document.querySelectorAll('button');
+             buttons.forEach(button => button.remove());
+         
+             const htmlContent = document.documentElement.outerHTML;
+         
+             scripts.forEach(script => document.head.appendChild(script.cloneNode(true)));
+         
+             const addProductButton = document.createElement('button');
+             addProductButton.className = 'add-product-button';
+             addProductButton.textContent = 'Add Product';
+             addProductButton.setAttribute('onclick', 'addProduct()');
+             document.body.appendChild(addProductButton);
+         
+             const copyButton = document.createElement('button');
+             copyButton.className = 'copy-button';
+             copyButton.textContent = 'Copy All Code';
+             copyButton.setAttribute('onclick', 'copyCode()');
+             document.body.appendChild(copyButton);
+         
+             navigator.clipboard.writeText(htmlContent).then(() => {
+                 alert('Code copied to clipboard!');
+             }).catch(err => {
+                 alert('Failed to copy code: ' + err);
+             });
+         }
+         const printedOnElement = document.getElementById('printed-on');
+         const currentDate = new Date();
+         const options = { day: 'numeric', month: 'long', year: 'numeric' };
+         printedOnElement.textContent += ` ${currentDate.toLocaleDateString('en-GB', options)}`;
+         
+         updateItemHeading();
+         updateLastClass();
+         updateTotal();
+      </script>
+   </body>
 </html>
