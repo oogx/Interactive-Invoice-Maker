@@ -109,7 +109,7 @@
                      <div class="editable">Product Name</div>
                      <div class="item-details editable">Colour: Testing</div>
                      <button class="add-item-detail-button" onclick="addItemDetail(this)">Add Item Detail</button>
-         <button class="add-item-detail-button" onclick="deleteProduct(this)">Delete Product</button>
+                     <button class="add-item-detail-button" onclick="deleteProduct(this)">Delete Product</button>
                  </td>
                  <td class="price editable">£0.00</td>
              `;
@@ -147,7 +147,7 @@
              const productRow = button.closest('.item');
              if (productRow) {
                  productRow.remove();
-         updateItemHeading();
+                 updateItemHeading();
                  updateLastClass();
                  updateTotal();
              }
