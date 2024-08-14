@@ -1,4 +1,3 @@
-"""
 # Interactive-Invoice-Maker
 
 **Interactive-Invoice-Maker** is a web-based tool designed to make creating and managing invoices simple and intuitive. With features like click-to-change text functionality, easy-to-understand buttons for adding new products, and a copy code button that strips all interactive elements for easy pasting into emails, this tool streamlines the invoice creation process.
